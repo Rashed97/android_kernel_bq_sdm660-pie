@@ -50,6 +50,9 @@
 #define DS2_ADM_COPP_TOPOLOGY_ID 0xFFFFFFFF
 #endif
 
+#define ADM_COPP_SPEAKER_MONO_PROTECT_TOPO 0x10314
+#define ADM_COPP_SPEAKER_MONO_PROTECT_TOPO_PROTECT 0x10028036
+
 struct adm_copp {
 
 	atomic_t id[AFE_MAX_PORTS][MAX_COPPS_PER_PORT];
@@ -2609,6 +2612,11 @@ static int adm_open_v8(int tmp_port, int port_idx, int copp_idx,
 	int ep2_payload_size = 0;
 	void *adm_params = NULL;
 	int param_size;
+
+	if ((topology == ADM_COPP_SPEAKER_MONO_PROTECT_TOPO) || (topology == ADM_COPP_SPEAKER_MONO_PROTECT_TOPO_PROTECT)) {
+		bit_width = 24;
+		pr_debug("%s: SP topology 0x%x is used. \n",  __func__, topology);
+	}
 
 	if (channel_mode < 0 || channel_mode > 32) {
 		pr_err("%s: Invalid channel number 0x%x\n",
